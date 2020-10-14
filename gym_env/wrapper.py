@@ -3,7 +3,7 @@ import numpy as np
 
 
 class PendulumCostWrapper(gym.Wrapper):
-    def __init__(self, env=None, skip=4):
+    def __init__(self, env, skip=4):
         super(PendulumCostWrapper, self).__init__(env)
 
     def step(self, u):

@@ -20,5 +20,6 @@ export CUDA_VISIBLE_DEVICES=-1
 # Begin experiment
 for seed in {1..1}
 do
-    python3.6 main.py
+    python3.6 scripts/experiment.py \
+    --exp_name pendulumn
 done
