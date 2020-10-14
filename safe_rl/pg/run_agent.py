@@ -14,6 +14,10 @@ from safe_rl.pg.utils import values_as_sorted_list
 from safe_rl.utils.logx import EpochLogger
 from safe_rl.utils.mpi_tf import MpiAdamOptimizer, sync_all_params
 from safe_rl.utils.mpi_tools import mpi_fork, proc_id, num_procs, mpi_sum
+from tensorboardX import SummaryWriter
+
+tb_writer = SummaryWriter('./logs/tb')
+
 
 # Multi-purpose agent runner for policy optimization algos 
 # (PPO, TRPO, their primal-dual equivalents, CPO)
@@ -342,6 +346,7 @@ def run_polopt_agent(env_fn,
     o, r, d, c, ep_ret, ep_cost, ep_len = env.reset(), 0, False, 0, 0, 0, 0
     cur_penalty = 0
     cum_cost = 0
+    counter = 0
 
     for epoch in range(epochs):
         if agent.use_penalty:
@@ -383,13 +388,12 @@ def run_polopt_agent(env_fn,
             logger.store(VVals=v_t, CostVVals=vc_t)
 
             o = o2
-            ep_ret += r
-            ep_cost += c
+            ep_ret += r * pow(0.99, ep_len)
+            ep_cost += c * pow(0.99, ep_len)
             ep_len += 1
 
             terminal = d or (ep_len == max_ep_len)
             if terminal or (t==local_steps_per_epoch-1):
-
                 # If trajectory didn't reach terminal state, bootstrap value target(s)
                 if d and not(ep_len == max_ep_len):
                     # Note: we do not count env time out as true terminal state
@@ -410,7 +414,12 @@ def run_polopt_agent(env_fn,
                     print('Warning: trajectory cut off by epoch at %d steps.'%ep_len)
 
                 # Reset environment
+                tb_writer.add_scalar("cost", ep_cost, counter)
+                tb_writer.add_scalar("return", ep_ret, counter)
+                counter += 1
+
                 o, r, d, c, ep_ret, ep_len, ep_cost = env.reset(), 0, False, 0, 0, 0, 0
+
 
         # Save model
         if (epoch % save_freq == 0) or (epoch == epochs-1):
