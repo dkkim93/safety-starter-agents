@@ -414,7 +414,7 @@ def run_polopt_agent(env_fn,
                     print('Warning: trajectory cut off by epoch at %d steps.'%ep_len)
 
                 # Reset environment
-                tb_writer.add_scalar("cost", ep_cost, counter)
+                tb_writer.add_scalar("cost", ep_cost - cost_lim, counter)
                 tb_writer.add_scalar("return", ep_ret, counter)
                 counter += 1
 
