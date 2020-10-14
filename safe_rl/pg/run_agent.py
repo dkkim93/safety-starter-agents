@@ -344,19 +344,20 @@ def run_polopt_agent(env_fn,
     cum_cost = 0
 
     for epoch in range(epochs):
-
         if agent.use_penalty:
             cur_penalty = sess.run(penalty)
 
         for t in range(local_steps_per_epoch):
-
             # Possibly render
             if render and proc_id()==0 and t < 1000:
                 env.render()
             
             # Get outputs from policy
-            get_action_outs = sess.run(get_action_ops, 
-                                       feed_dict={x_ph: o[np.newaxis]})
+            obs = o
+            if len(o.shape) == 1:
+                obs = np.expand_dims(o, 0)
+
+            get_action_outs = sess.run(get_action_ops, feed_dict={x_ph: obs})
             a = get_action_outs['pi']
             v_t = get_action_outs['v']
             vc_t = get_action_outs.get('vc', 0)  # Agent may not use cost value func
