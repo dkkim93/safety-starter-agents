@@ -42,9 +42,12 @@ def main(robot, task, algo, seed, exp_name, cpu):
     # Algo and Env
     algo = eval('safe_rl.'+algo)
 
-    env = gym.make("Pendulum-v0")
-    env._max_episode_steps = 64
-    env = PendulumCostWrapper(env)
+    # env = gym.make("Pendulum-v0")
+    # env._max_episode_steps = 64
+    # env = PendulumCostWrapper(env)
+
+    import gym_env
+    env = gym.make("pointmass-v0")
     cost_lim = 0.
 
     algo(env_fn=lambda: env,
@@ -58,7 +61,8 @@ def main(robot, task, algo, seed, exp_name, cpu):
          max_ep_len=64,
          cost_lim=cost_lim,
          seed=seed,
-         logger_kwargs=logger_kwargs
+         logger_kwargs=logger_kwargs,
+         prefix=algo
          )
 
 

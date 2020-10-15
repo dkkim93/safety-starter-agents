@@ -21,5 +21,6 @@ export CUDA_VISIBLE_DEVICES=-1
 for seed in {1..1}
 do
     python3.6 scripts/experiment.py \
-    --exp_name pendulumn
+    --exp_name pendulumn \
+    --algo "ppo_lagrangian"
 done

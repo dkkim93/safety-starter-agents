@@ -5,3 +5,4 @@ tensorboardX==1.2
 tensorflow==1.13.1
 joblib==0.14.0
 mpi4py==3.0.2
+matplotlib

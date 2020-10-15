@@ -16,7 +16,6 @@ from safe_rl.utils.mpi_tf import MpiAdamOptimizer, sync_all_params
 from safe_rl.utils.mpi_tools import mpi_fork, proc_id, num_procs, mpi_sum
 from tensorboardX import SummaryWriter
 
-tb_writer = SummaryWriter('./logs/tb')
 
 
 # Multi-purpose agent runner for policy optimization algos 
@@ -50,8 +49,11 @@ def run_polopt_agent(env_fn,
                      # Logging:
                      logger=None, 
                      logger_kwargs=dict(), 
-                     save_freq=1
+                     save_freq=1,
+                     prefix=""
                      ):
+
+    tb_writer = SummaryWriter('./logs/tb_{}'.format(prefix))
 
 
     #=========================================================================#
