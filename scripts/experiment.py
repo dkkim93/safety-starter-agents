@@ -45,7 +45,7 @@ def main(robot, task, algo, seed, exp_name, cpu):
     env = gym.make("Pendulum-v0")
     env._max_episode_steps = 64
     env = PendulumCostWrapper(env)
-    cost_lim = 1.
+    cost_lim = 0.
 
     algo(env_fn=lambda: env,
          ac_kwargs=dict(
