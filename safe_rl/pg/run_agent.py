@@ -36,6 +36,7 @@ def run_polopt_agent(env_fn,
                      cost_gamma=0.99, 
                      cost_lam=0.97, 
                      # Policy learning:
+                     pi_lr=3e-4,
                      ent_reg=0.,
                      # Cost constraints / penalties:
                      cost_lim=25,
@@ -217,7 +218,7 @@ def run_polopt_agent(env_fn,
     elif agent.first_order:
 
         # Optimizer for first-order policy optimization
-        train_pi = MpiAdamOptimizer(learning_rate=agent.pi_lr).minimize(pi_loss)
+        train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(pi_loss)
 
         # Prepare training package for agent
         training_package = dict(train_pi=train_pi)

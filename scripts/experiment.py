@@ -22,10 +22,10 @@ def main(robot, task, algo, seed, exp_name, cpu):
     # Hyperparameters
     exp_name = algo + '_' + robot + task
     if robot=='Doggo':
-        num_steps = 1e8
+        num_steps = 1e10
         steps_per_epoch = 60000
     else:
-        num_steps = 1e7
+        num_steps = 1e10
         steps_per_epoch = 30000
     epochs = int(num_steps / steps_per_epoch)
     save_freq = 50
@@ -47,8 +47,12 @@ def main(robot, task, algo, seed, exp_name, cpu):
     # env = PendulumCostWrapper(env)
 
     import gym_env
+    # Setup pointmass
     env = gym.make("pointmass-v0")
     cost_lim = 0.
+    lam = 0.95
+    cost_lam = 0.95
+    pi_lr = 0.001
 
     algo(env_fn=lambda: env,
          ac_kwargs=dict(
@@ -58,11 +62,14 @@ def main(robot, task, algo, seed, exp_name, cpu):
          steps_per_epoch=steps_per_epoch,
          save_freq=save_freq,
          target_kl=target_kl,
-         max_ep_len=64,
          cost_lim=cost_lim,
          seed=seed,
          logger_kwargs=logger_kwargs,
-         prefix=algo
+         prefix=algo,
+         lam=lam,
+         cost_lam=cost_lam,
+         max_ep_len=1000,
+         pi_lr=pi_lr
          )
 
 
