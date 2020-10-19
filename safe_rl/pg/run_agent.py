@@ -413,14 +413,13 @@ def run_polopt_agent(env_fn,
                 # Only save EpRet / EpLen if trajectory finished
                 if terminal:
                     logger.store(EpRet=ep_ret, EpLen=ep_len, EpCost=ep_cost)
+                    tb_writer.add_scalar("cost", ep_cost - cost_lim, counter)
+                    tb_writer.add_scalar("return", ep_ret, counter)
+                    counter += 1
                 else:
                     print('Warning: trajectory cut off by epoch at %d steps.'%ep_len)
 
                 # Reset environment
-                tb_writer.add_scalar("cost", ep_cost - cost_lim, counter)
-                tb_writer.add_scalar("return", ep_ret, counter)
-                counter += 1
-
                 o, r, d, c, ep_ret, ep_len, ep_cost = env.reset(), 0, False, 0, 0, 0, 0
 
 
