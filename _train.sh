@@ -17,6 +17,9 @@ pip3 install -r requirements.txt
 # Comment for using GPU
 export CUDA_VISIBLE_DEVICES=-1
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export PYTHONPATH=$DIR:$PYTHONPATH
+
 # Begin experiment
 for seed in {1..1}
 do
