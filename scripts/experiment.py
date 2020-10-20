@@ -1,8 +1,10 @@
 import gym 
 import safe_rl
+import os
 from safe_rl.utils.run_utils import setup_logger_kwargs
 from safe_rl.utils.mpi_tools import mpi_fork
 from gym_env.wrapper import PendulumCostWrapper
+# from utils import set_log
 
 
 def main(robot, task, algo, seed, exp_name, cpu):
@@ -39,6 +41,11 @@ def main(robot, task, algo, seed, exp_name, cpu):
     exp_name = algo
     logger_kwargs = setup_logger_kwargs(exp_name, seed)
 
+    # if not os.path.exists("./log"):
+    #     os.makedirs("./log")
+    args.log_name = "seed::" + str(args.seed) + "_algo::" + args.algo
+    # custom_log = set_log(args)
+
     # Algo and Env
     algo = eval('safe_rl.'+algo)
 
@@ -69,7 +76,8 @@ def main(robot, task, algo, seed, exp_name, cpu):
          lam=lam,
          cost_lam=cost_lam,
          max_ep_len=1000,
-         pi_lr=pi_lr
+         pi_lr=pi_lr,
+         args=args
          )
 
 

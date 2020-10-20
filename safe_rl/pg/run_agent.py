@@ -51,16 +51,17 @@ def run_polopt_agent(env_fn,
                      logger=None, 
                      logger_kwargs=dict(), 
                      save_freq=1,
-                     prefix=""
+                     prefix="",
+                     custom_log=None,
+                     args=None
                      ):
 
-    tb_writer = SummaryWriter('./logs/tb_{}'.format(prefix))
+    tb_writer = SummaryWriter('./log/tb_{}'.format(args.log_name))
 
 
     #=========================================================================#
     #  Prepare logger, seed, and environment in this process                  #
     #=========================================================================#
-
     logger = EpochLogger(**logger_kwargs) if logger is None else logger
     logger.save_config(locals())
 
@@ -351,6 +352,9 @@ def run_polopt_agent(env_fn,
     cum_cost = 0
     counter = 0
 
+    from utils import set_log
+    log = set_log(args)
+
     for epoch in range(epochs):
         if agent.use_penalty:
             cur_penalty = sess.run(penalty)
@@ -415,7 +419,13 @@ def run_polopt_agent(env_fn,
                     logger.store(EpRet=ep_ret, EpLen=ep_len, EpCost=ep_cost)
                     tb_writer.add_scalar("cost", ep_cost - cost_lim, counter)
                     tb_writer.add_scalar("return", ep_ret, counter)
+                    log[args.log_name].info("At iteration {}, cost: {}".format(counter, ep_cost - cost_lim))
+                    log[args.log_name].info("At iteration {}, return: {}".format(counter, ep_ret))
                     counter += 1
+
+                    if counter > 300000:
+                        import sys
+                        sys.exit()
                 else:
                     print('Warning: trajectory cut off by epoch at %d steps.'%ep_len)
 
