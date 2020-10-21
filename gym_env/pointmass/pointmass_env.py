@@ -65,7 +65,7 @@ class PointMassEnv(gym.Env):
 
         reward = -np.linalg.norm(self.agent.position - self.landmark.position)
 
-        obstacle_type = 1   # choose from 1~6
+        obstacle_type = 2   # choose from 1~6
         if obstacle_type == 1: # one circle, binary cost
             cost = 0 if np.linalg.norm(self.agent.position) > self.radius and \
                 np.max(np.abs(self.agent.position)) < self.xlim else 1
