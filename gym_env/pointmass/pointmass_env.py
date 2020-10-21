@@ -34,7 +34,7 @@ class PointMassEnv(gym.Env):
         # self.landmark.position = self.xlim - 0.1 * self.xlim * np.random.uniform(0, 1, self.dim)
 
         self.agent.position = 0.1 * self.xlim * np.array([1,1]) - self.xlim
-        self.landmark.position = - self.agent.position
+        self.landmark.position = -np.copy(self.agent.position)
 
     def seed(self, seed=None):
         random.seed(seed)
