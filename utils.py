@@ -1,5 +1,4 @@
 import logging
-import git
 import numpy as np
 
 
@@ -44,10 +43,6 @@ def set_log(args):
 
     for arg, value in sorted(vars(args).items()):
         log[args.log_name].info("%s: %r", arg, value)
-
-    repo = git.Repo(".")
-    log[args.log_name].info("Branch: {}".format(repo.active_branch))
-    log[args.log_name].info("Commit: {}".format(repo.head.commit))
 
     return log
 
