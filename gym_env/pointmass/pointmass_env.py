@@ -6,6 +6,7 @@ import random
 
 class PointMassEnv(gym.Env):
     def __init__(self, args, xlim=2, radius=1):
+        self.args = args
         self.xlim = xlim
         self.radius = radius
         self.dim = 2
@@ -33,7 +34,7 @@ class PointMassEnv(gym.Env):
         # self.agent.position = 0.1 * self.xlim * np.random.uniform(0, 1, self.dim) - self.xlim
         # self.landmark.position = self.xlim - 0.1 * self.xlim * np.random.uniform(0, 1, self.dim)
 
-        self.agent.position = 0.1 * self.xlim * np.array([1,1]) - self.xlim
+        self.agent.position = 0.1 * self.xlim * np.array([1, 1]) - self.xlim
         self.landmark.position = -np.copy(self.agent.position)
 
     def seed(self, seed=None):
@@ -65,30 +66,29 @@ class PointMassEnv(gym.Env):
 
         reward = -np.linalg.norm(self.agent.position - self.landmark.position)
 
-        obstacle_type = 2   # choose from 1~6
-        if obstacle_type == 1: # one circle, binary cost
+        if self.args.obstacle_type == 1: # one circle, binary cost
             cost = 0 if np.linalg.norm(self.agent.position) > self.radius and \
                 np.max(np.abs(self.agent.position)) < self.xlim else 1
-        elif obstacle_type == 2: # one smaller square, binary cost
+        elif self.args.obstacle_type == 2: # one smaller square, binary cost
             xlim_smaller = .5 * self.xlim
             cost = 0 if np.max(np.abs(self.agent.position)) > xlim_smaller and \
                         np.max(np.abs(self.agent.position)) < self.xlim else 1
-        elif obstacle_type == 3: #two circles, binary cost
+        elif self.args.obstacle_type == 3: #two circles, binary cost
             center_1 = np.array([-.5, .5])
             center_2 = -center_1
             cost = 0 if np.linalg.norm(self.agent.position - center_1) > self.radius and \
                         np.linalg.norm(self.agent.position - center_2) > self.radius and \
                         np.max(np.abs(self.agent.position)) < self.xlim else 1
-        elif obstacle_type == 4:  # one circle, continuous cost
+        elif self.args.obstacle_type == 4:  # one circle, continuous cost
             dist_to_center = np.linalg.norm(self.agent.position)
             cost = 0 if dist_to_center > self.radius and \
                         np.max(np.abs(self.agent.position)) < self.xlim else 2 * np.exp(-dist_to_center) + .5
-        elif obstacle_type == 5:  # one smaller square, continuous cost
+        elif self.args.obstacle_type == 5:  # one smaller square, continuous cost
             dist_to_center = np.linalg.norm(self.agent.position)
             xlim_smaller = .5 * self.xlim
             cost = 0 if np.max(np.abs(self.agent.position)) > xlim_smaller and \
                         np.max(np.abs(self.agent.position)) < self.xlim else 2 * np.exp(-dist_to_center) + .5
-        elif obstacle_type == 6:  # two circles, continuous cost
+        elif self.args.obstacle_type == 6:  # two circles, continuous cost
             dist_to_center = np.linalg.norm(self.agent.position)
             center_1 = np.array([-.5, .5])
             center_2 = -center_1

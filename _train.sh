@@ -25,5 +25,7 @@ for seed in {1..1}
 do
     python3.6 scripts/experiment.py \
     --seed $seed \
-    --algo "ppo_lagrangian"
+    --algo "cpo" \
+    --obstacle-type 1 \
+    --cost-lim 5
 done
