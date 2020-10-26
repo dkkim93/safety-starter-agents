@@ -25,10 +25,10 @@ class PendulumCostWrapper(gym.Wrapper):
         self.state = np.array([newth, newthdot])
 
         # bound = np.pi * 1 / np.pi
-        bound = 1.3
+        bound = 1
         newth_ = angle_normalize(newth)
         # flag_constraint_active = True if newth_ > bound or newth_ < -bound else False
-        constraint = 0.08 if newth_ > bound or newth_ < -bound else 0
+        constraint = 1 if newth_ > bound or newth_ < -bound else 0
         info = {'cost': constraint}
 
         self.counter += 1
@@ -40,7 +40,7 @@ class PendulumCostWrapper(gym.Wrapper):
 
     def reset(self):
         self.counter = 0
-        high = .1 * np.array([np.pi, 1])
+        high = 1 * np.array([np.pi, 1])
         self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
         return self._get_obs()
