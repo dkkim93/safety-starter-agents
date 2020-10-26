@@ -7,12 +7,13 @@ class PendulumCostWrapper(gym.Wrapper):
         super(PendulumCostWrapper, self).__init__(env)
 
     def step(self, u):
-        th, thdot = self.state
+        th, thdot = self.state  # th := theta
 
         g = self.g
         m = 1.  # Default value from https://github.com/openai/gym/blob/master/gym/envs/classic_control/pendulum.py
         l = 1.  # Default value from https://github.com/openai/gym/blob/master/gym/envs/classic_control/pendulum.py
         dt = self.dt
+        self.max_torque = 15.
 
         u = np.clip(u, -self.max_torque, self.max_torque)[0]
         self.last_u = u  # for rendering
@@ -23,15 +24,16 @@ class PendulumCostWrapper(gym.Wrapper):
         newthdot = np.clip(newthdot, -self.max_speed, self.max_speed)  # pylint: disable=E1111
         self.state = np.array([newth, newthdot])
 
-        bound = 4.5
-        constraint = 0.06 if np.linalg.norm(self.state[1]) >= bound else 0
+        # bound = np.pi * 1 / np.pi
+        bound = 1.3
+        newth_ = angle_normalize(newth)
+        # flag_constraint_active = True if newth_ > bound or newth_ < -bound else False
+        constraint = 0.08 if newth_ > bound or newth_ < -bound else 0
         info = {'cost': constraint}
-        return self._get_obs(), -costs[0], False, info
+        return self._get_obs(), -costs, False, info
 
     def reset(self):
-        hign_max = 2.
-        high = np.array([np.pi, 1])
-        high = high / np.linalg.norm(high) * hign_max
+        high = .1 * np.array([np.pi, 1])
         self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
         return self._get_obs()
