@@ -30,9 +30,16 @@ class PendulumCostWrapper(gym.Wrapper):
         # flag_constraint_active = True if newth_ > bound or newth_ < -bound else False
         constraint = 0.08 if newth_ > bound or newth_ < -bound else 0
         info = {'cost': constraint}
-        return self._get_obs(), -costs, False, info
+
+        self.counter += 1
+        done = False
+        if self.counter >= 100:
+            done = True
+
+        return self._get_obs(), -costs, done, info
 
     def reset(self):
+        self.counter = 0
         high = .1 * np.array([np.pi, 1])
         self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
