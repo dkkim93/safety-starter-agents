@@ -423,7 +423,7 @@ def run_polopt_agent(env_fn,
                     log[args.log_name].info("At iteration {}, return: {}".format(counter, ep_ret))
                     counter += 1
 
-                    if counter > 300000:
+                    if counter > 200000:
                         import sys
                         sys.exit()
                 else:
